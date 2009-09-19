@@ -1,9 +1,12 @@
 from zope.interface import Interface
-from zope.app.publisher.browser.viewmeta import page
 from zope.viewlet.metaconfigure import viewletDirective
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.viewlet.viewlet import ViewletBase
+try:
+    from Products.Five.browser.metaconfigure import page
+except ImportError:
+    from zope.app.publisher.browser.viewmeta import page
 
 from zenoss.extdirect.router import DirectProviderDefinition
 
