@@ -1,0 +1,39 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+    <include package="zope.viewlet" file="meta.zcml"/>
+    <include package="zope.contentprovider"/>
+
+    <browser:viewletManager
+        name="zenoss.extdirect"
+        provides=".interfaces.IExtDirectJavaScriptManager"
+        class=".javascript.ExtDirectJavaScriptManager" 
+        permission="zope.Public"
+        />
+
+    <browser:resource
+        name="ext-base.js"
+        file="../javascript/ext-base.js"
+        />
+
+    <browser:resource
+        name="ext-all.js"
+        file="../javascript/ext-all.js"
+        />
+
+    <browser:viewlet
+        name="ext-base.js"
+        manager=".interfaces.IExtDirectJavaScriptManager"
+        class=".javascript.ExtBaseViewlet"
+        permission="zope.Public"
+        />
+
+    <browser:viewlet
+        name="ext-all.js"
+        manager=".interfaces.IExtDirectJavaScriptManager"
+        class=".javascript.ExtSourceViewlet"
+        permission="zope.Public"
+        />
+
+</configure>
