@@ -6,5 +6,4 @@ from interfaces import IExtDirectJavaScriptManager
 class ExtDirectJavaScriptManager(WeightOrderedViewletManager):
     zope.interface.implements(IExtDirectJavaScriptManager)
 
-ExtBaseViewlet = JavaScriptViewlet('ext-base.js')
-ExtSourceViewlet = JavaScriptViewlet('ext-all.js')
+DirectSourceViewlet = JavaScriptViewlet('direct.js')

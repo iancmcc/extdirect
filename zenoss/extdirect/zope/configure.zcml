@@ -17,26 +17,14 @@
         />
 
     <browser:resource
-        name="ext-base.js"
-        file="../javascript/ext-base.js"
-        />
-
-    <browser:resource
-        name="ext-all.js"
-        file="../javascript/ext-all.js"
+        name="direct.js"
+        file="../javascript/direct.js"
         />
 
     <browser:viewlet
-        name="ext-base.js"
+        name="direct.js"
         manager=".interfaces.IExtDirectJavaScriptManager"
-        class=".javascript.ExtBaseViewlet"
-        permission="zope.Public"
-        />
-
-    <browser:viewlet
-        name="ext-all.js"
-        manager=".interfaces.IExtDirectJavaScriptManager"
-        class=".javascript.ExtSourceViewlet"
+        class=".javascript.DirectSourceViewlet"
         permission="zope.Public"
         />
 
