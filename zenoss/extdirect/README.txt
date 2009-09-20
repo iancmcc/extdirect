@@ -15,6 +15,11 @@ For a full description of Ext.Direct's features, see:
 
     http://www.extjs.com/products/extjs/direct.php
 
+You may download Ext and use it in your application normally; if you would
+prefer, a stripped-down version including only resources necessary for
+Ext.Direct is included with this package in the javascript directory, along
+with instructions for building it from any version of Ext>=3.0.
+
 Let's see how the server side works. First, we'll define a router:
 
     >>> from zenoss.extdirect.router import DirectRouter
@@ -96,5 +101,3 @@ out our other defined method:
     >>> print resultob['result']
     Today is Wednesday.
 
-And that's it: a very easy way to remote server-side methods to the client
-side.
