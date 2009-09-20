@@ -5,4 +5,4 @@ Building direct.js
 3. Copy direct.jsb to the Ext source directory
 4. cd to the Ext source directory
 5. java -jar /path/to/JSBuilder2.jar --projectFile ./direct.jsb2 --homeDir
-   /path/to/zenoss/extdirect/javascript
+   /path/to/extdirect/javascript
