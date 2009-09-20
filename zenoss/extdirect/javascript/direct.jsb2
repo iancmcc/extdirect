@@ -1,0 +1,64 @@
+{
+    projectName: 'Ext JS',
+    deployDir: '.',
+    licenseText: "Ext JS Library 3.0.0\nCopyright(c) 2006-2009 Ext JS, LLC\nlicensing@extjs.com\nhttp://www.extjs.com/license",
+    pkgs: [{
+        name: 'Bare Direct',
+        file: 'direct.js',
+        isDebug: true,
+        fileIncludes: [{
+            text: 'Ext.js',
+            path: 'src/core/core/'
+        },{
+            text: 'Ext-more.js',
+    	    path: 'src/core/'
+        },{
+            text: 'ext-base-begin.js',
+            path: 'src/adapter/core/'
+        },{
+            text: 'ext-base-event.js',
+            path: 'src/adapter/core/'
+        },{
+            text: 'ext-base-ajax.js',
+            path: 'src/adapter/core/'
+        },{
+            text: 'ext-base-end.js',
+            path: 'src/adapter/core/'
+        },{
+            text: 'Observable.js',
+            path: 'src/util/core/'
+        },{
+            text: 'EventManager.js',
+            path: 'src/core/core/'
+        },{
+            text: 'Connection.js',
+            path: 'src/data/core/'
+        },{
+            text: 'DelayedTask.js',
+            path: 'src/util/core/'
+        },{
+            text: 'JSON.js',
+            path: 'src/util/core/'
+        },{
+            text: 'Direct.js',
+            path: 'src/direct/'
+        },{
+            text: 'Transaction.js',
+            path: 'src/direct/'
+        },{
+            text: 'Event.js',
+            path: 'src/direct/'
+        },{
+            text: 'Provider.js',
+            path: 'src/direct/'
+        },{
+            text: 'JsonProvider.js',
+            path: 'src/direct/'
+        },{
+            text: 'RemotingProvider.js',
+            path: 'src/direct/'
+        }]
+    }],
+    resources: []
+}
+
