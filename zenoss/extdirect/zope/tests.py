@@ -8,7 +8,7 @@ def test_suite():
     return unittest.TestSuite([
 
         # Unit tests for your API
-        doctestunit.DocFileSuite(
+        DocFileSuite(
             'README.txt', package='zenoss.extdirect.zope',
             setUp=testing.setUp, tearDown=testing.tearDown),
 
