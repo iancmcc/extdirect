@@ -1,9 +1,9 @@
 import os
 
 from django import template
-from extdirect.router import DirectProviderDefinition
 
-from extd import registry
+from extdirect.router import DirectProviderDefinition
+from extdirect.django import registry
 
 register = template.Library()
 
