@@ -1,0 +1,5 @@
+0.2
+Added django subpackage
+
+0.1
+Initial release, including zope subpackage
