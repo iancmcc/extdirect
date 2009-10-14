@@ -115,7 +115,6 @@ class DirectProviderDefinition(object):
         methods = ",".join(methodtpl % a for a in attrs)
         source = """
 <script type="text/javascript">
-Ext.onReady(function(){
     Ext.Direct.addProvider({
         type: 'remoting',
         url: '%(url)s',
@@ -126,7 +125,6 @@ Ext.onReady(function(){
         },
         namespace: '%(ns)s'
     });
-});
 </script>""" % dict(url=self.url, ns=self.ns, clsname=self.routercls.__name__,
                    methods=methods)
         return source.strip()
