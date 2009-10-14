@@ -1,4 +1,6 @@
-extdirect
+============
+Introduction
+============
 
 To use this package, you must either have simplejson installed, or be using
 Python 2.6 (which includes simplejson as the json package).
@@ -19,6 +21,10 @@ You may download Ext and use it in your application normally; if you would
 prefer, a stripped-down version including only resources necessary for
 Ext.Direct is included with this package in the javascript directory, along
 with instructions for building it from any version of Ext>=3.0.
+
+===========
+Base Router
+===========
 
 Let's see how the server side works. First, we'll define a router:
 
@@ -100,4 +106,101 @@ out our other defined method:
     >>> resultob = json.loads(utils(body))
     >>> print resultob['result']
     Today is Wednesday.
+
+===========
+Zope Router
+===========
+
+Using extdirect in Zope is extremely simple, due to a custom ZCML
+directive that registers both a BrowserView for the server-side API and a
+viewlet to deliver the provider definition to the client.
+
+1. Define your class.  e.g., in myapi.py:
+
+   from extdirect.zope import DirectRouter
+
+   class MyApi(DirectRouter):
+
+       def a_method(self):
+           return 'A Value'
+
+2. Register the class as a direct router
+
+   <configure xmlns="http://namespaces.zope.org/browser">
+     <include package="extdirect.zope" file="meta.zcml"/>
+       <directRouter
+          name="myapi"
+          namespace="MyApp.remote"
+          class=".myapi.MyApi"
+          />
+   </configure>
+
+
+3. Provide the extdirect viewletManager in your template.  If you already have
+Ext loaded through other means, use the extdirect provider; otherwise, you can
+use the stripped-down Ext.Direct libraries provided with this package:
+
+    <tal:block tal:content="structure provider:extdirect+direct.js"/>
+
+
+4. Call methods at will!
+
+    <script>
+
+      function a_method_callback(result){
+          ... do something with result ...
+      }
+
+      MyApp.remote.a_method({}, a_method_callback);
+
+    </script>
+
+=============
+Django Router
+=============
+
+So, you have a Django app, and you want to add Ext.Direct. Here's how:
+
+    1. Add 'extdirect.django' to INSTALLED_APPS in settings.py
+    
+    2. In a new file called direct.py, define your router class and register it:
+    
+            from extdirect.django import DirectRouter, register_router
+
+            class MyRouter(DirectRouter):
+                def uppercase(self, word):
+                    return word.upper()
+                def lowercase(self, word):
+                    return word.lower()
+
+            register_router(MyRouter, 'Remote')
+        
+       The arguments to register_router are the router class, the client-side
+       namespace, and an optional url under /extdirect at which the router
+       should be available (defaults to the name of the class).
+
+
+    3. In the root URLconf, map the extdirect urls by adding:
+
+        (r'^extdirect/', include('extdirect.django.urls'))
+
+    4. Also in the root URLconf, add these two lines:
+
+        import extdirect.django as extdirect
+        extdirect.autodiscover()
+
+    5. In your template, load the provider definitions:
+        
+            {% load direct_providers %}
+            {% direct_providers %}
+
+       If you don't have Ext on the page already, you can write a stripped-down
+       version directly to the page by adding +direct.js to the template tag:
+
+            {% direct_providers +direct.js %}
+
+    6. That's it. You should now have access on that template to the remote
+       methods:
+            
+            Remote.MyRouter.uppercase({word:'a word'}, callback);
 

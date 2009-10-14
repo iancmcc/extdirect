@@ -6,7 +6,7 @@ So, you have a Django app, and you want to add Ext.Direct. Here's how:
 
     1. Add 'extdirect.django' to INSTALLED_APPS in settings.py
     
-    2. In views.py, define your router class and register it:
+    2. In a new file called direct.py, define your router class and register it:
     
             from extdirect.django import DirectRouter, register_router
 
@@ -22,16 +22,15 @@ So, you have a Django app, and you want to add Ext.Direct. Here's how:
        namespace, and an optional url under /extdirect at which the router
        should be available (defaults to the name of the class).
 
-    3. In the __init__.py of your app, add:
 
-          import views
-
-       This is so that the router classes will be registered on startup; it
-       should have no other effect.
-
-    4. In the root URLconf, map the extdirect urls by adding:
+    3. In the root URLconf, map the extdirect urls by adding:
 
         (r'^extdirect/', include('extdirect.django.urls'))
+
+    4. Also in the root URLconf, add these two lines:
+
+        import extdirect.django as extdirect
+        extdirect.autodiscover()
 
     5. In your template, load the provider definitions:
         

@@ -1,3 +1,8 @@
+0.3
+
+Updated django subpackage with Avizoa's patch replacing "import views" with the
+much cleaner "extdirect.autodiscover()".
+
 0.2
 Added django subpackage
 
