@@ -1,3 +1,5 @@
+import inspect
+
 class DirectException(Exception):
     pass
 
@@ -34,15 +36,34 @@ class DirectRouter(object):
         body = json.loads(body)
         self._body = body
 
+        if isinstance(body, list):
+            directRequests = body
+        elif isinstance(body, dict):
+            directRequests = [body]
+        else:
+            raise DirectException("Body is not a support type: %s" % body)
+
+        responses = []
+
+        for req in directRequests:
+            responses.append(self._doRequest(req))
+
+        if len(responses) == 1:
+            responses = responses[0]
+
+        return json.dumps(responses)
+
+    def _doRequest(self, request):
+
         # Double-check that this request is meant for this class
-        action = body.get('action')
+        action = request.get('action')
         clsname = self.__class__.__name__
         if action != clsname:
             raise DirectException(("Action specified in request ('%s') is"
                                   " not named %s.") % (action, clsname))
 
         # Pull out the method name and make sure it exists on this class
-        method = body.get('method')
+        method = request.get('method')
         if not method:
             raise DirectException("No method specified. Is this a valid"
                                   " Ext.Direct request?")
@@ -55,7 +76,7 @@ class DirectRouter(object):
 
         # Pull out any arguments. Sent as an array containing a hash map, so
         # get the first member.
-        data = body.get('data')
+        data = request.get('data')
         if not data:
             data = {}
         else:
@@ -68,13 +89,13 @@ class DirectRouter(object):
         # Finally, call the target method, passing in the data
         result = _targetfn(**data)
 
-        return json.dumps({
+        return {
             'type':'rpc',
-            'tid': body['tid'],
+            'tid': request['tid'],
             'action': action,
             'method': method,
             'result': result
-        })
+        }
 
 
 class DirectProviderDefinition(object):
@@ -89,7 +110,7 @@ class DirectProviderDefinition(object):
     See http://extjs.com/products/extjs/direct.php for a full explanation of
     protocols and features of Ext.Direct.
     """
-    def __init__(self, routercls, url, ns):
+    def __init__(self, routercls, url, ns=None, timeout=None):
         """
         @param routercls: A L{DirectRouter} subclass
         @type routercls: class
@@ -104,28 +125,44 @@ class DirectProviderDefinition(object):
         self.routercls = routercls
         self.url = url
         self.ns = ns
+        self.timeout = timeout
+
+    def _config(self):
+        actions = []
+        for name, value in inspect.getmembers(self.routercls):
+            if name.startswith("_"):
+                continue
+            if inspect.ismethod(value):
+
+                ## Update this when extdirect doesn't freak out when you specify
+                ## actual lens (we're passing them all in as a single dict, so
+                ## from the perspective of Ext.Direct they are all len 1)
+                #args = inspect.getargspec(value)[0]
+                #args.remove('self')
+                #arglen = len(args)
+                arglen = 1
+
+                actions.append({'name':name, 'len':arglen})
+        config = {
+            'id': self.routercls.__name__,
+            'type': 'remoting',
+            'url': self.url,
+            'actions': {
+                self.routercls.__name__: actions
+            }
+        }
+        if self.timeout:
+            config['timeout'] = self.timeout
+        if self.ns:
+            config['namespace'] = self.ns
+        return config
 
     def render(self):
         """
         Generate and return an Ext.Direct provider definition, wrapped in a
         <script> tag and ready for inclusion in an HTML document.
         """
-        attrs = (a for a in self.routercls.__dict__ if not a.startswith('_'))
-        methodtpl = '{name:"%s", len:1}'
-        methods = ",".join(methodtpl % a for a in attrs)
-        source = """
-<script type="text/javascript">
-    Ext.Direct.addProvider({
-        type: 'remoting',
-        url: '%(url)s',
-        actions: {
-            "%(clsname)s":[
-              %(methods)s
-            ]
-        },
-        namespace: '%(ns)s'
-    });
-</script>""" % dict(url=self.url, ns=self.ns, clsname=self.routercls.__name__,
-                   methods=methods)
-        return source.strip()
+        config = self._config()
+        source = "Ext.Direct.addProvider(%s);" % json.dumps(config)
+        return '<script type="text/javascript"> %s </script>' % source.strip()
 

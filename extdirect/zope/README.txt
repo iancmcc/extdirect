@@ -34,11 +34,9 @@ viewlet to deliver the provider definition to the client.
 
 
 3. Provide the extdirect viewletManager in your template. 
-   If you already have Ext loaded through other means, use the extdirect
-   provider; otherwise, you can use the stripped-down Ext.Direct libraries
-   provided with this package:
+   (Note: Ext is a prerequisite.)
 
-    <tal:block tal:content="structure provider:extdirect+direct.js"/>
+    <tal:block tal:content="structure provider:extdirect"/>
 
 
 4. Call methods at will!

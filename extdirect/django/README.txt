@@ -37,11 +37,6 @@ So, you have a Django app, and you want to add Ext.Direct. Here's how:
             {% load direct_providers %}
             {% direct_providers %}
 
-       If you don't have Ext on the page already, you can write a stripped-down
-       version directly to the page by adding +direct.js to the template tag:
-
-            {% direct_providers +direct.js %}
-
     6. That's it. You should now have access on that template to the remote
        methods:
             

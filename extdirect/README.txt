@@ -15,11 +15,6 @@ For a full description of Ext.Direct's features, see:
 
     http://www.extjs.com/products/extjs/direct.php
 
-You may download Ext and use it in your application normally; if you would
-prefer, a stripped-down version including only resources necessary for
-Ext.Direct is included with this package in the javascript directory, along
-with instructions for building it from any version of Ext>=3.0.
-
 Let's see how the server side works. First, we'll define a router:
 
     >>> from extdirect.router import DirectRouter
@@ -41,19 +36,14 @@ client-side namespace containing these methods simply to be called 'Remote.'
 
     >>> from extdirect.router import DirectProviderDefinition
     >>> print DirectProviderDefinition(TestUtils, '/utils', 'Remote').render()
+    ... #doctest: +NORMALIZE_WHITESPACE
     <script type="text/javascript">
-    Ext.onReady(function(){
-        Ext.Direct.addProvider({
-            type: 'remoting',
-            url: '/utils',
-            actions: {
-                "TestUtils":[
-                  {name:"capitalize", len:1},{name:"today", len:1}
-                ]
-            },
-            namespace: 'Remote'
-        });
-    });
+    Ext.Direct.addProvider({"url": "/utils",
+        "namespace": "Remote",
+        "type": "remoting",
+        "id": "TestUtils",
+        "actions": {"TestUtils": [{"name": "capitalize", "len": 1}, 
+                                  {"name": "today", "len": 1}]}});
     </script>
 
 Now, assuming that, one way or another, we've provided this code to the client

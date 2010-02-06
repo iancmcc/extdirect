@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.3'
+version = '0.5'
 
 setup(name='extdirect',
       version=version,
@@ -16,7 +16,7 @@ setup(name='extdirect',
       author='Ian McCracken',
       author_email='ian@zenoss.com',
       url='http://code.google.com/p/extdirect',
-      license='GPLv3',
+      license='BSD',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=[],
       include_package_data=True,

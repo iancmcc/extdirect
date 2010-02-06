@@ -16,23 +16,4 @@
         permission="zope.Public"
         />
 
-    <browser:viewletManager
-        name="extdirect+direct.js"
-        provides=".interfaces.IExtDirectJavaScriptAndSourceManager"
-        class=".javascript.ExtDirectJavaScriptAndSourceManager" 
-        permission="zope.Public"
-        />
-
-    <browser:resource
-        name="direct.js"
-        file="../javascript/direct.js"
-        />
-
-    <browser:viewlet
-        name="direct.js"
-        manager=".interfaces.IExtDirectJavaScriptAndSourceManager"
-        class=".javascript.DirectSourceViewlet"
-        permission="zope.Public"
-        />
-
 </configure>

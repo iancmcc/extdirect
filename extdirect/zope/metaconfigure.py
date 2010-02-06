@@ -1,6 +1,5 @@
 from zope.interface import Interface
 from zope.viewlet.metaconfigure import viewletDirective
-from zope.publisher.interfaces.browser import IBrowserView
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.viewlet.viewlet import ViewletBase
 try:
@@ -25,14 +24,15 @@ def JavaScriptSourceViewlet(source):
                   'weight':2})
     return klass
 
-def directRouter(_context, name, class_, namespace, for_=Interface,
-                 layer=IDefaultBrowserLayer):
+def directRouter(_context, name, class_, namespace, timeout=None,
+                 for_=Interface, layer=IDefaultBrowserLayer):
 
     # Register the view at which the class will be available
     page(_context, name, 'zope.Public', for_, layer, class_=class_)
 
     # Make a viewlet class with the appropriate javascript source
-    source = DirectProviderDefinition(class_, name, namespace).render()
+    source = DirectProviderDefinition(class_, name, namespace,
+                                      timeout).render()
     viewletclass = JavaScriptSourceViewlet(source)
 
     viewletDirective(_context, name, 'zope.Public', for_, layer,

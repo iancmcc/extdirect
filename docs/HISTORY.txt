@@ -1,3 +1,14 @@
+0.4
+Removed stripped-down direct.js for licensing reasons
+
+Rereleased under BSD license
+
+Added request batching support (thanks to Brian Edwards, bedwards@zenoss.com)
+
+Added provided timeout option in Zope (thanks to Jon-Pierre Gentil,
+jgentil@zenoss.com)
+
+
 0.3
 
 Updated django subpackage with Avizoa's patch replacing "import views" with the

@@ -17,15 +17,6 @@ For a full description of Ext.Direct's features, see:
 
     http://www.extjs.com/products/extjs/direct.php
 
-You may download Ext and use it in your application normally; if you would
-prefer, a stripped-down version including only resources necessary for
-Ext.Direct is included with this package in the javascript directory, along
-with instructions for building it from any version of Ext>=3.0.
-
-===========
-Base Router
-===========
-
 Let's see how the server side works. First, we'll define a router:
 
     >>> from extdirect.router import DirectRouter
@@ -47,19 +38,14 @@ client-side namespace containing these methods simply to be called 'Remote.'
 
     >>> from extdirect.router import DirectProviderDefinition
     >>> print DirectProviderDefinition(TestUtils, '/utils', 'Remote').render()
+    ... #doctest: +NORMALIZE_WHITESPACE
     <script type="text/javascript">
-    Ext.onReady(function(){
-        Ext.Direct.addProvider({
-            type: 'remoting',
-            url: '/utils',
-            actions: {
-                "TestUtils":[
-                  {name:"capitalize", len:1},{name:"today", len:1}
-                ]
-            },
-            namespace: 'Remote'
-        });
-    });
+    Ext.Direct.addProvider({"url": "/utils",
+        "namespace": "Remote",
+        "type": "remoting",
+        "id": "TestUtils",
+        "actions": {"TestUtils": [{"name": "capitalize", "len": 1}, 
+                                  {"name": "today", "len": 1}]}});
     </script>
 
 Now, assuming that, one way or another, we've provided this code to the client
@@ -107,6 +93,7 @@ out our other defined method:
     >>> print resultob['result']
     Today is Wednesday.
 
+
 ===========
 Zope Router
 ===========
@@ -115,7 +102,9 @@ Using extdirect in Zope is extremely simple, due to a custom ZCML
 directive that registers both a BrowserView for the server-side API and a
 viewlet to deliver the provider definition to the client.
 
-1. Define your class.  e.g., in myapi.py:
+1. Define your class
+   
+   e.g., in myapi.py:
 
    from extdirect.zope import DirectRouter
 
@@ -124,23 +113,26 @@ viewlet to deliver the provider definition to the client.
        def a_method(self):
            return 'A Value'
 
+
 2. Register the class as a direct router
 
    <configure xmlns="http://namespaces.zope.org/browser">
+
      <include package="extdirect.zope" file="meta.zcml"/>
+
        <directRouter
           name="myapi"
           namespace="MyApp.remote"
           class=".myapi.MyApi"
           />
+
    </configure>
 
 
-3. Provide the extdirect viewletManager in your template.  If you already have
-Ext loaded through other means, use the extdirect provider; otherwise, you can
-use the stripped-down Ext.Direct libraries provided with this package:
+3. Provide the extdirect viewletManager in your template. 
+   (Note: Ext is a prerequisite.)
 
-    <tal:block tal:content="structure provider:extdirect+direct.js"/>
+    <tal:block tal:content="structure provider:extdirect"/>
 
 
 4. Call methods at will!
@@ -194,13 +186,9 @@ So, you have a Django app, and you want to add Ext.Direct. Here's how:
             {% load direct_providers %}
             {% direct_providers %}
 
-       If you don't have Ext on the page already, you can write a stripped-down
-       version directly to the page by adding +direct.js to the template tag:
-
-            {% direct_providers +direct.js %}
-
     6. That's it. You should now have access on that template to the remote
        methods:
             
             Remote.MyRouter.uppercase({word:'a word'}, callback);
 
+        
