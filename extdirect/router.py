@@ -1,4 +1,5 @@
 import inspect
+from xml.dom.minidom import getDOMImplementation
 
 class DirectException(Exception):
     pass
@@ -110,7 +111,7 @@ class DirectProviderDefinition(object):
     See http://extjs.com/products/extjs/direct.php for a full explanation of
     protocols and features of Ext.Direct.
     """
-    def __init__(self, routercls, url, ns=None, timeout=None):
+    def __init__(self, routercls, url, ns=None, timeout=None, format="text/html"):
         """
         @param routercls: A L{DirectRouter} subclass
         @type routercls: class
@@ -126,6 +127,7 @@ class DirectProviderDefinition(object):
         self.url = url
         self.ns = ns
         self.timeout = timeout
+        self.format = format
 
     def _config(self):
         actions = []
@@ -157,12 +159,64 @@ class DirectProviderDefinition(object):
             config['namespace'] = self.ns
         return config
 
+    def _xml(self):
+        """
+        Return the API definition as XML
+        """
+        config = self._config()['actions']
+        impl = getDOMImplementation()
+        doc = impl.createDocument(None, 'DirectAPI', None)
+        try:
+            for router_name, methods in config.iteritems():
+                router_node = doc.createElement(router_name)
+                methods_node = doc.createElement('methods')
+                router_node.appendChild(methods_node)
+                for method in methods:
+                    meth_node = doc.createElement('method')
+                    meth_node.setAttribute('name', method['name'])
+                    meth_node.setAttribute('len', method['len'])
+                    methods_node.appendChild(meth_node)
+                doc.documentElement.appendChild(router_node)
+            return doc.toxml()
+        finally:
+            doc.unlink()
+
+    def _json(self):
+        """
+        Return the API definition as JSON
+        """
+        config = self._config()['actions']
+        return json.dumps(config)
+
+    def _js(self):
+        return """
+Ext.onReady(function(){
+    Ext.Direct.addProvider(%s);
+});
+        """ % json.dumps(self._config())
+
+    def _script(self):
+        """
+        Return a fully-formed script tag containing the definition.
+        """
+        return """
+<script type="text/javascript">
+%s
+</script>
+        """ % self._js()
+
     def render(self):
         """
         Generate and return an Ext.Direct provider definition, wrapped in a
         <script> tag and ready for inclusion in an HTML document.
         """
-        config = self._config()
-        source = "Ext.Direct.addProvider(%s);" % json.dumps(config)
-        return '<script type="text/javascript"> %s </script>' % source.strip()
+        renderers = {
+            'text/html': self._script,
+            'text/javascript': self._js,
+            'application/xml': self._xml,
+            'application/json': self._json
+        }
+        if self.format not in renderers:
+            raise DirectException("%s is an unknown format for the API.") % self.format
+        return renderers[self.format]()
 
