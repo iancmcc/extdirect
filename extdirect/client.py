@@ -1,0 +1,2 @@
+class DirectClient(object):
+    pass
